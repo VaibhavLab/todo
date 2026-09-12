@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#111827" />
+  <meta name="description" content="A fast, offline-first advanced todo manager." />
+  <title>Todo Pro</title>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <div>
+        <p class="eyebrow">PRODUCTIVITY</p>
+        <h1>Todo Pro</h1>
+        <p class="subtitle">Plan clearly. Finish deliberately.</p>
+      </div>
+      <div class="top-actions">
+        <button id="themeToggle" class="icon-button" type="button" aria-label="Toggle theme">◐</button>
+        <button id="exportBtn" class="secondary-button" type="button">Export</button>
+        <label class="secondary-button file-button">
+          Import
+          <input id="importInput" type="file" accept="application/json" hidden />
+        </label>
+      </div>
+    </header>
+
+    <section class="stats-grid" aria-label="Todo statistics">
+      <article class="stat-card"><span>Total</span><strong id="totalCount">0</strong></article>
+      <article class="stat-card"><span>Active</span><strong id="activeCount">0</strong></article>
+      <article class="stat-card"><span>Completed</span><strong id="completedCount">0</strong></article>
+      <article class="stat-card"><span>Overdue</span><strong id="overdueCount">0</strong></article>
+    </section>
+
+    <main class="main-grid">
+      <section class="panel composer-panel">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">NEW TASK</p>
+            <h2>Add something worth finishing</h2>
+          </div>
+          <kbd>N</kbd>
+        </div>
+
+        <form id="todoForm" class="todo-form">
+          <label>
+            Task
+            <input id="todoInput" type="text" maxlength="160" placeholder="e.g. Finish API authentication" required />
+          </label>
+
+          <div class="form-row">
+            <label>
+              Priority
+              <select id="priorityInput">
+                <option value="low">Low</option>
+                <option value="medium" selected>Medium</option>
+                <option value="high">High</option>
+              </select>
+            </label>
+            <label>
+              Due date
+              <input id="dueDateInput" type="date" />
+            </label>
+          </div>
+
+          <label>
+            Tags
+            <input id="tagsInput" type="text" maxlength="100" placeholder="work, study, personal" />
+          </label>
+
+          <button class="primary-button" type="submit">Add task</button>
+        </form>
+      </section>
+
+      <section class="panel list-panel">
+        <div class="toolbar">
+          <div class="search-wrap">
+            <span aria-hidden="true">⌕</span>
+            <input id="searchInput" type="search" placeholder="Search tasks or tags..." aria-label="Search tasks" />
+          </div>
+
+          <div class="filters" id="filters" role="group" aria-label="Todo filters">
+            <button class="filter-button active" data-filter="all" type="button">All</button>
+            <button class="filter-button" data-filter="active" type="button">Active</button>
+            <button class="filter-button" data-filter="completed" type="button">Done</button>
+            <button class="filter-button" data-filter="today" type="button">Today</button>
+            <button class="filter-button" data-filter="overdue" type="button">Overdue</button>
+          </div>
+
+          <div class="toolbar-row">
+            <select id="sortSelect" aria-label="Sort tasks">
+              <option value="created-desc">Newest first</option>
+              <option value="created-asc">Oldest first</option>
+              <option value="priority">Priority</option>
+              <option value="due-date">Due date</option>
+            </select>
+            <button id="clearCompletedBtn" class="danger-ghost" type="button">Clear completed</button>
+          </div>
+        </div>
+
+        <div id="emptyState" class="empty-state">
+          <div class="empty-icon">✓</div>
+          <h3>No tasks here</h3>
+          <p>Add a task or change your filters.</p>
+        </div>
+
+        <ul id="todoList" class="todo-list" aria-live="polite"></ul>
+      </section>
+    </main>
+  </div>
+
+  <template id="todoTemplate">
+    <li class="todo-item">
+      <button class="check-button" type="button" aria-label="Toggle completed"></button>
+      <div class="todo-content">
+        <div class="todo-title-row">
+          <p class="todo-title"></p>
+          <span class="priority-badge"></span>
+        </div>
+        <div class="todo-meta"></div>
+      </div>
+      <div class="todo-actions">
+        <button class="edit-button" type="button">Edit</button>
+        <button class="delete-button" type="button" aria-label="Delete task">Delete</button>
+      </div>
+    </li>
+  </template>
+
+  <dialog id="editDialog">
+    <form id="editForm" method="dialog" class="dialog-form">
+      <div class="dialog-heading">
+        <div><p class="eyebrow">EDIT TASK</p><h2>Update task</h2></div>
+        <button id="closeDialogBtn" class="icon-button" type="button" aria-label="Close">×</button>
+      </div>
+      <label>Task<input id="editTextInput" type="text" maxlength="160" required /></label>
+      <div class="form-row">
+        <label>Priority<select id="editPriorityInput"><option value="low">Low</option><option value="medium">Medium</option><option value="high">High</option></select></label>
+        <label>Due date<input id="editDueDateInput" type="date" /></label>
+      </div>
+      <label>Tags<input id="editTagsInput" type="text" maxlength="100" /></label>
+      <div class="dialog-actions">
+        <button id="cancelEditBtn" class="secondary-button" type="button">Cancel</button>
+        <button class="primary-button" type="submit">Save changes</button>
+      </div>
+    </form>
+  </dialog>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>
